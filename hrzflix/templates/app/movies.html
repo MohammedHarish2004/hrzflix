@@ -1,0 +1,138 @@
+    {% extends 'app/layouts/main.html' %}
+    {% load static %}
+    {% block title %}
+    Movies | HrzFlix
+    {% endblock title %}
+
+    {% block content %}
+
+    {% include 'app/inc/navbar.html' %}
+
+
+    <div class="container-fluid">
+        <div class="row py-5">
+            <!-- Main Content -->
+            <div class="col-lg-12 col-md-12 col-12">
+                <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebar1">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title">Genres</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="list-unstyled">
+                            <li><a href="{% url 'movies' %}" class="text-white h5" style="text-decoration: none;">All</a></li>
+                            <hr>
+                            {% for genre in genres %}
+                            <li><a href="?genre={{ genre.id }}" class="text-white h5" style="text-decoration: none;">{{ genre.name }}</a></li>
+                            <hr>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+
+                    <div class="recently-watched mt-4 ms-3 mb-2">
+                
+                        {% for item in genres %}
+                            {% if item.id == genre_id %}
+                                <span class="text-white">{{ item.name }} Movies</span>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if not genre_id %}
+                            <span class="text-white">All Movies</span>
+                        {% endif %}
+                    </div>
+        
+                <div class="d-flex justify-content-between gap-2 ">
+                    <div >
+                        <button class="btn btn-sm ms-3 mt-4 filter"  type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar1" aria-controls="sidebar">Filter</button>
+
+                    </div>
+
+                    <div>
+                        <form action="{% url 'movies' %}" class="d-flex gap-1 mt-4">
+                            <input type="text" name="search" class="form-control form-control-sm  bg-body-secondary border-0 shadow-none" placeholder="Search here">
+                            <button class="btn btn-danger filter btn-sm " type="submit">Search</button>
+                        </form>                    
+                    </div>
+
+                </div>
+
+                <br>
+                <div class="container-fluid ">
+                    <div class="row">
+                        {% if movies %}
+                        {% for item in movies %}
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-5">
+                            <a href="{% url 'movies' item.name %}">
+                                <div class="position-relative">
+                                    <div class="collection-img-container">
+                                        <img src="{{ item.movie_image.url }}" class="img-fluid collection-img"  alt="">
+                                    </div>
+                                    <div class="position-absolute bottom-0 text-white w-100 collection-content">
+                                        <div class="movies-title p-2">
+                                            {% if item.name|length > 8 %}
+                                            <h2>{{ item.name|slice:":8" }}...</h2>
+                                            {% else %}
+                                                <h2>{{ item.name }}</h2>
+                                            {% endif %}
+                                        </div>
+                                        <div class="movies-info p-2">
+                                            <span class="d-flex ">{{ item.rating }}</span>
+                                            <span class="d-flex">{{ item.duration }}</span>
+                                            <span>HD</span>
+                                            <span>{{ item.age }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <img src="{% static 'images/testing.png' %}" style="width: 20rem;margin: 0 auto;" alt="">
+                        
+                        <h2 class="text-center text-white mt-3">Results Not Found</h2>
+                        {% endif %}
+                    </div>
+                    
+                    {% if movies.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center custom-pagination">
+                            {% if movies.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link text-danger " href="?page={{ movies.previous_page_number }}" aria-label="Previous">
+                                Prev
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% for num in movies.paginator.page_range %}
+                            <li class="page-item  {% if movies.number == num %}active{% endif %}">
+                                <a class="page-link  border-white" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                            {% endfor %}
+                            {% if movies.has_next %}
+                            <li class="page-item">
+                                <a class="page-link text-danger " href="?page={{ movies.next_page_number }}" aria-label="Next">
+                                Next</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+
+                    </nav>
+                    {% endif %}
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Footer  -->
+        
+    {% include 'app/inc/footer.html' %}
+
+
+    {% endblock content %}

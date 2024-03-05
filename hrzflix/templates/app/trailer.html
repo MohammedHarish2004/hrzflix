@@ -1,0 +1,86 @@
+{% extends 'app/layouts/main.html' %}
+{% load static %}
+
+{% block title %}
+{{ movie.name }} | HrzFlix
+{% endblock title %}
+
+{% block content %}
+
+<style>
+img{
+    margin: 0rem auto;
+    margin-top: 9rem;
+
+}
+@media(max-width:768px){
+    #player{
+    margin-top: 5rem;
+}
+
+img{
+    margin-top: 7rem;
+}
+
+}
+
+@media(max-width:567px){
+    #player{
+    margin-top: 8rem;
+}
+
+img{
+    margin-top: 5rem;
+}
+}
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+           {% if trailer_url %}
+           <div class="plyr__video-embed" id="player">
+                <iframe src="{{ trailer_url }}" allowfullscreen allowtransparency allow="autoplay"></iframe>
+            </div>
+            {% elif trailer_url_2 %}
+            <div class="plyr__video-embed" id="player">
+                 <iframe src="{{ trailer_url_2 }}" allowfullscreen allowtransparency allow="autoplay"></iframe>
+             </div>
+            {% else %}
+           <center>
+            <img src="{% static 'images/testing.png' %}" style="width: 18rem;" alt="">
+           </center>    
+            <h2 class="text-center text-white mt-3">This Movie is Currently not available</h2>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
+<script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
+
+<script>
+    // Wait for the document to be fully loaded
+    $(document).ready(function() {
+        const player = new Plyr('#player');
+
+        // Play the video when the player is ready
+        player.on('ready', event => {
+            player.play();
+        });
+    });
+
+    $(document).ready(function() {
+        const player = new Plyr('#player2');
+
+        // Play the video when the player is ready
+        player.on('ready', event => {
+            player.play();
+        });
+    });
+</script>
+
+{% endblock content %}

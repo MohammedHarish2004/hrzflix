@@ -1,0 +1,168 @@
+{% extends 'app/layouts/main.html' %}
+{% load static %}
+
+{% block title %}
+{{ movie.name }} | HrzFlix
+{% endblock title %}
+
+{% block content %}
+
+{% include 'app/inc/navbar.html' %}
+
+<div class="container">
+    <div class="row">
+        <!-- <a href="{% if movie.theme.name == 'Movie' %}{% url 'movies' %}
+        {% elif movie.theme.name == 'Anime' %}{% url 'animes' %}
+        {% elif movie.theme.name == 'Series' %}{% url 'series' %}
+        {% endif %}" class="text-white ">
+               Back
+           </a> -->
+        <div class="col-xl-5 col-lg-6 col-md-6">            
+            <div class="movie-details">
+                <div class="movie-image p-5 m-2 mt-4 ">
+                    <img src="{{ movie.movie_image.url }}" class="img-fluid" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-7 col-lg-6 col-md-6 d-flex flex-column ">
+            <div class="movie-info text-white p-5 mt-lg-3 mt-md-3 mt-sm-0 ">
+                <input type="hidden" value="{{movie.id}} " id="movieId">
+                <h2 >{{ movie.name }}</h2>
+                <p class="mt-3">Genre: {{ movie.genre }}</p>
+                <p class="mt-3 d-flex gap-1">
+                    <span>Rating: {{ movie.rating }}</span>
+                    <iconify-icon style="color:yellow;font-size: 1.1rem;" class="stars" icon="ic:round-star">
+                    </iconify-icon>
+                </p>
+              
+                <p class="mt-3 d-flex gap-1">
+                    <span>Duration: {{ movie.duration }}</span>
+                    <iconify-icon icon="mingcute:time-line" class="stars" style="color:white;font-size: 1.1rem;">
+                    </iconify-icon>
+                </p>
+                <p>HD: Yes <i class="fa-solid fa-tick fa-xs"></i></p>
+                <p>Age: {{ movie.age }}</p>
+                {% if request.user.is_authenticated %}
+                <div class="d-flex flex-lg-column  flex-md-column  d-sm-flex flex-column gap-3">
+                    <a class="btn btn-sm p-1" href="{% url 'trailer_view' movie.name  %}" style="background-color: red;color: white;font-weight: 600;" >Play Now <i class="fa-solid fa-play fa-xs"></i></a>
+                    <button class="btn btn-secondary  btn-sm " style="color: white;font-weight: 600;" id="btnLater">Watch Later <i class="fa-solid fa-arrow-rotate-left fa-xs"></i></button>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-sm ml-2" style="background-color: red;color: white;font-weight: 600;">Login <i class="fa-solid fa-right-to-bracket"></i></a>
+                {% endif %}
+            </div>
+            <div class="ms-5">
+               {% if related_movies %}
+                {% for item in themes %}
+                    {% if item.id == movie.theme.id %}
+                    <span class="text-white">Related {{item.name}}</span>
+                    {% endif %}
+                {% endfor %}
+                {% else %}
+                {% endif %}
+               
+                {% if related_movies %}
+                <div class="owl-carousel mt-4 mb-4">
+                    {% for item in related_movies %}
+                   <a href="{% if item.theme.name == 'Movie' %}{% url 'movies' item.name %}
+                   {% elif item.theme.name == 'Anime' %}{% url 'animes' item.name %}
+                   {% elif item.theme.name == 'Series' %}{% url 'series' item.name %}
+                   {% endif %}">
+                    <div class="movies-img">
+                        <div class="movie-container">
+                            <img src="{{ item.movie_image.url }}" class="img-fluid " alt="">
+                        </div>
+                    </div>
+                   </a>
+                   {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+       
+
+    </div>
+</div>
+
+{% include 'app/inc/footer.html' %}
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/assets/owl.theme.default.min.css">
+<script src="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/owl.carousel.min.js"></script>
+
+
+ 
+
+ <!-- Sweet Toast -->
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    
+
+<script>
+        $('.owl-carousel').owlCarousel({
+            loop: false,
+            responsiveClass: true,
+            margin: 7,
+            center:false,    
+            autoplay:true,
+            autoplayTimeout:3000,
+            autoplayHoverPause:true,
+            
+            responsive: {
+                0: {
+                    items: 3,
+                    nav: false
+                },
+                600: {
+                    items: 4,
+                    nav: false
+                },
+                1000: {
+                    items: 4,
+                    nav: false
+                }
+            },
+           
+        })
+
+        document.addEventListener('DOMContentLoaded',function(){
+
+            var btnLater = document.getElementById('btnLater')
+            var movieId = document.getElementById('movieId').value
+
+            btnLater.addEventListener('click',function(){
+                let postObj = {'movieId':movieId}
+
+                fetch('/addToLater',{
+                    method:"POST",
+                    headers:{
+                        'Accept':'application/json',
+                        'X-Requested-With':'XMLHttpRequest',
+                        'X-CSRFToken':'{{ csrf_token }}'
+                    },
+                    body:JSON.stringify(postObj)
+                }).then(response =>{
+                    return response.json()
+                }).then(data =>{
+                    Swal.fire({
+                    title: 'Status',
+                    text: data['status'],
+                    icon: data['status'] === 'Added to Watch Later' ? 'success' : 'warning',
+                    showConfirmButton: false,
+                    timer: 1500
+                    });
+                    console.log('Status:', data['status']);
+
+                })  
+            })
+
+        })
+        
+       
+    </script>
+
+{% endblock content %}

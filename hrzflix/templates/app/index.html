@@ -1,0 +1,431 @@
+{% extends 'app/layouts/main.html' %}
+{% load static %}
+{% block title %}
+    Home | HrzFlix 
+{% endblock title %}
+
+{% block content %}
+{% include 'app/inc/message.html' %}
+
+    <style>
+        .register-now {
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            border: 2px solid red !important;
+            background-color: transparent;
+            transition: all 0.3s;
+    }
+
+        .register-now:hover{
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        background-color: red !important;
+        transition: all 0.3s;
+    }
+    </style>
+<body style="overflow-x: hidden;">
+
+    <div>
+        <div id="homes" class="netflix_home">
+          
+            {% include 'app/inc/navbar.html' %}
+
+        <div id="carouselExampleFade" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for item in slider1 %}
+
+            <div class="carousel-item {% if forloop.first %}active{% endif %}  hero">
+                <div class="hero-section">
+                    <img src="{{ item.movie_image.url }}" alt="">
+                </div>
+                <div class="hero-wrapper">
+                    <div class="hero-content">
+                        <div class="hero-title">
+                            <h2>{{ item.name }}</h2>
+                        </div>
+                        <div class="hero-info">
+                            <span class="d-flex">
+                                <iconify-icon style="color:yellow;" class="stars" icon="ic:round-star">
+                                </iconify-icon>{{ item.rating }}
+                            </span>
+                            <span class="d-flex">
+                                <iconify-icon icon="mingcute:time-line" class="stars " style="color:white">
+                                </iconify-icon>{{ item.duration }}
+                            </span>
+                            <span>HD</span>
+                            <span>{{ item.age }}</span>
+                        </div>
+                        <div class="hero-des">
+                            {{ item.description }}
+                        </div>
+                      {% if request.user.is_authenticated %}
+                        <div class="hero-btn d-flex gap-2">
+                            <a class="btn watch-now d-flex" style="border: 2px solid red;" href="{% url 'trailer_view_2' item.name  %}">Play Now </a>
+                        </div>
+                      {% else %}
+                        <div class="hero-btn d-flex gap-2">
+                            <a class="btn watch-now d-flex" style="border: 2px solid red;" href="{% url 'login'  %}">Login Now </a>
+                        </div>
+                      {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}        
+        </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    
+    
+        <div class="owl-carousel">
+            {% for item in trending_movie %}
+            <a href="{% if item.theme.name == 'Movie' %}{% url 'movies' item.name %}
+                     {% elif item.theme.name == 'Anime' %}{% url 'animes' item.name %}
+                     {% elif item.theme.name == 'Series' %}{% url 'series' item.name %}
+                     {% endif %}">
+                <div class="movies-img">
+                    <div class="movie-container">
+                        <img src="{{ item.movie_image.url }}" alt="">
+                    </div>
+                    <div class="movies-wrapper">
+                        <div class="movies-content">
+                            <div class="movies-title">
+                                {% if item.name|length > 8 %}
+                                <h2>{{ item.name|slice:":8" }}...</h2>
+                                {% else %}
+                                    <h2>{{ item.name }}</h2>
+                                {% endif %}
+                            </div>
+                            <div class="movies-info">
+                                <span class="d-flex ">{{ item.rating }}</span>
+                                <span class="d-flex">{{ item.duration }}</span>
+                                <span>HD</span>
+                                <span>{{ item.age }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+
+        </div>
+    
+        <!-- <div class="recently-watched">
+            <span class="text-white">Recently Watched</span>
+        </div> -->
+
+      
+    
+        <div id="animes" class="recently-watched">
+            <span class="text-white">Epic Animes</span>
+        </div>
+        <div class="owl-carousel mt-4">
+            {% for item in animes %}
+           <a href="{% url 'animes' item.name %}">
+            <div class="movies-img">
+                <div class="movie-container">
+                    <img src="{{ item.movie_image.url }}" alt="">
+                </div>
+                <div class="movies-wrapper">
+                    <div class="movies-content">
+                        <div class="movies-title">
+                            {% if item.name|length > 8 %}
+                            <h2>{{ item.name|slice:":8" }}...</h2>
+                            {% else %}
+                                <h2>{{ item.name }}</h2>
+                            {% endif %}
+                        </div>
+                        <div class="movies-info">
+                            <span class="d-flex ">{{ item.rating }}</span>
+                            <span class="d-flex">{{ item.duration }}</span>
+                            <span>HD</span>
+                            <span>{{ item.age }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           </a>
+            {% endfor %}
+        </div>
+    
+    <br>
+
+    <div id="carouselExampleFade2" class="carousel slide" data-bs-ride="carousel">
+
+        <div class="carousel-inner">
+        {% for item in slider2 %}
+
+            <div class="carousel-item {% if forloop.first %}active{% endif %} hero">
+        <div class="hero-section">
+            <img src="{{ item.movie_image.url }}" alt="">
+        </div>
+        <div class="hero-wrapper">
+            <div class="hero-content">
+                <div class="hero-title">
+                    <h2>{{ item.name }}</h2>
+                </div>
+                <div class="hero-info">
+                    <span class="d-flex">
+                        <iconify-icon style="color:yellow;" class="stars" icon="ic:round-star">
+                        </iconify-icon>{{ item.rating }}
+                    </span>
+                    <span class="d-flex">
+                        <iconify-icon icon="mingcute:time-line" class="stars " style="color:white">
+                        </iconify-icon>{{ item.duration }}
+                    </span>
+                    <span>HD</span>
+                    <span>{{ item.age }}</span>
+                </div>
+                <div class="hero-des">
+                    {{ item.description }}
+                </div>
+                <div class="hero-btn d-flex gap-2">
+                    <a class="btn watch-now d-flex" style="border: 2px solid red;" href="{% url 'trailer_view_2' item.name  %}">Play Now </a>
+                   
+                </div>
+            </div>
+        </div>
+            </div>
+            {% endfor %}        
+    
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade2"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade2"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+     <br>
+
+     <div id="movies" class="recently-watched ">
+        <span class="text-white ">Top Movies</span>
+    </div>
+    <div class="owl-carousel mt-4">
+
+        {% for item in movies %}
+       <a href="{% url 'movies' item.name %}">
+        <div class="movies-img">
+            <div class="movie-container">
+                <img src="{{ item.movie_image.url }}" alt="">
+            </div>
+            <div class="movies-wrapper">
+                <div class="movies-content">
+                    <div class="movies-title">
+                        {% if item.name|length > 8 %}
+                        <h2>{{ item.name|slice:":8" }}...</h2>
+                        {% else %}
+                            <h2>{{ item.name }}</h2>
+                        {% endif %}
+                    </div>
+                    <div class="movies-info">
+                        <span class="d-flex ">{{ item.rating }}</span>
+                        <span class="d-flex">{{ item.duration }}</span>
+                        <span>HD</span>
+                        <span>{{ item.age }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+       </a>
+        {% endfor %}
+
+    </div>
+    
+        <div id="series" class="recently-watched mt-4">
+            <span class="text-white">Popular Series</span>
+        </div>
+        <div class="owl-carousel mt-4">
+            
+            {% for item in series %}
+           <a href="{% url 'series' item.name %}">
+            <div class="movies-img">
+                <div class="movie-container">
+                    <img src="{{ item.movie_image.url }}" alt="">
+                </div>
+                <div class="movies-wrapper">
+                    <div class="movies-content">
+                        <div class="movies-title">
+                            {% if item.name|length > 8 %}
+                            <h2>{{ item.name|slice:":8" }}...</h2>
+                            {% else %}
+                                <h2>{{ item.name }}</h2>
+                            {% endif %}
+                        </div>
+                        <div class="movies-info">
+                            <span class="d-flex ">{{ item.rating }}</span>
+                            <span class="d-flex">{{ item.duration }}</span>
+                            <span>HD</span>
+                            <span>{{ item.age }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           </a>
+            {% endfor %}
+    
+        </div>
+        <br>
+    
+       
+    
+        <!-- Subscription Section -->
+        <div id="Subscribe" class="recently-watched mt-4">
+            <span class="text-white">Subscription</span>
+        </div>
+    
+        <div class="container-fluid subscription-container ">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-12 basic">
+                    <div class="card subscription-card text-white" style="margin-top: 1rem">
+                        <div class="subscription-rate ">
+                            <div>
+                                Basic
+                            </div>
+                            <div style="font-weight: 600;">
+                                Free
+                            </div>
+                        </div>
+    
+                        <div class="subscription-details">
+                            <div class="subscription-content">
+                                <ul>
+                                    <li>HRZ Flix Originals</li>
+                                    <li>Swithch plans or cancel anytime</li>
+                                    <li style="text-decoration: line-through;">Stream 65+ top Live</li>
+                                    <li style="text-decoration: line-through;">TV Channels</li>
+                                </ul>
+                            </div>
+    
+                            <div class="subscription-btn">
+                                <a href="{% url 'not_available' %}" class="btn btn-danger register-now">Register Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-lg-4 col-md-6  col-sm-6 col-12 premium mt-md-0 ">
+                    <div class="card subscription-card text-white" style="margin-top: 1rem">
+                        <div class="subscription-rate ">
+                            <div>
+                                Premium
+                            </div>
+                            <div style="font-weight: 600;">
+                                $35.99 <span class="text-secondary">/month</span>
+                            </div>
+                        </div>
+    
+                        <div class="subscription-details">
+                            <div class="subscription-content ">
+                                <ul>
+                                    <li>HRZ Flix Originals</li>
+                                    <li>Swithch plans or cancel anytime</li>
+                                    <li>Stream 65+ top Live</li>
+                                    <li style="text-decoration: line-through;">TV Channels</li>
+                                </ul>
+                            </div>
+    
+                            <div class="subscription-btn">
+                                <a href="{% url 'not_available' %}" class="btn btn-danger register-now">Register Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-lg-4 col-md-6 col-sm-6 col-12 mt-lg-0 mt-md-3 vvp">
+                    <div class="card subscription-card text-white" style="margin-top: 1rem">
+                        <div class="subscription-rate ">
+                            <div>
+                                VVIP
+                            </div>
+                            <div style="font-weight: 600;">
+                                $55.99 <span class="text-secondary">/month</span>
+                            </div>
+                        </div>
+    
+                        <div class="subscription-details">
+                            <div class="subscription-content">
+                                <ul>
+                                    <li>HRZ Flix Originals</li>
+                                    <li>Swithch plans or cancel anytime</li>
+                                    <li>Stream 65+ top Live</li>
+                                    <li>TV Channels</li>
+                                </ul>
+                            </div>
+    
+                            <div class="subscription-btn">
+                                <a href="{% url 'not_available' %}" class="btn  register-now" >Register Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <br><br><br>
+        <!-- Footer  -->
+    
+        {% include 'app/inc/footer.html' %}
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/assets/owl.theme.default.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/owl.carousel.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+<script>
+
+
+
+    $('.owl-carousel').owlCarousel({
+        loop: false,
+        responsiveClass: true,
+        margin: 7,
+        center:false,    
+        autoplay:true,
+        autoplayTimeout:3000,
+        autoplayHoverPause:true,
+        
+        responsive: {
+            0: {
+                items: 3,
+                nav: false
+            },
+            600: {
+                items: 4,
+                nav: false
+            },
+            1000: {
+                items: 5,
+                nav: false
+            }
+        },
+       
+    })
+
+
+       
+</script>
+
+</body>
+{% endblock content %}

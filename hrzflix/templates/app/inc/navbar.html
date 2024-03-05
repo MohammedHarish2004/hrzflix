@@ -1,0 +1,97 @@
+{% load static %}
+
+<style>
+    .offcanvas.show{
+        width: 40%;
+    }
+
+    @media (max-width:426px){
+        .btn-xs{
+        font-size: 12px;
+    }
+    }
+
+    @media (max-width:376px){
+        .btn-xs{
+        font-size: 10px;
+    }
+    }
+</style>
+<header class="container-fluid">
+    <div>
+        <header class="header">
+
+            <div class="head">
+                <img src="{% static 'images/hrzflix.png' %}" width="150px" style="filter: brightness(2);" alt="">
+
+            </div>
+
+            <div class="head1">
+                <ul class="nav-menu d-lg-flex  d-md-flex  d-sm-none d-none ">
+                    <li>
+                        <a href="{% url 'home' %}" class="nav-item">Home</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'movies' %}" class="nav-item">Movies</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'animes' %}" class="nav-item">Animes</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'series' %}" class="nav-item">Series</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="head2 d-flex gap-2 ">
+                <div class="dropdown ">
+                    <a class="btn btn-sm eng ml-2 " href="{% url 'watchlater' %}" id="dropdownMenuLink">
+                        Watch  <i class="fa-solid fa-clock "></i>
+                    </a>
+                </div>
+
+                <div class="dropdown">
+                    
+                        {% if request.user.is_authenticated %}
+                    <a class="btn btn-sm si ml-2" data-bs-toggle="dropdown">User <i class="fa-solid fa-right-to-bracket"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-dark pt-3">
+                        <li><a class="dropdown-item"  class="btn si btn-sm ml-2">{{user}} <i class="fa-solid fa-user"></i></a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}" class="btn si btn-sm ml-2">Logout <i class="fa-solid fa-right-to-bracket"></i></a></li>
+                    </ul>
+                        {% else %}
+
+                    <a class="btn btn-sm si ml-2" data-bs-toggle="dropdown">Login <i class="fa-solid fa-right-to-bracket"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-dark pt-3">
+                        <li><a class="dropdown-item" href="{% url 'register' %}" class="btn si btn-sm ml-2">Register <i class="fa-solid fa-right-to-bracket"></i></a></li>
+                        <li><a class="dropdown-item" href="{% url 'login' %}" class="btn si btn-sm ml-2">Login <i class="fa-solid fa-right-to-bracket"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="sidebar">
+                    <div class="offcanvas-header">
+                        <h3 class="offcanvas-title">HrzFlix</h3>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="list-unstyled">
+                            <li><a href="{% url 'home' %}" class="text-white fs-6 " style="text-decoration: none;">Home</a></li>
+                            <hr>
+                            <li><a href="{% url 'movies' %}" class="text-white fs-6 " style="text-decoration: none;">Movies</a></li>
+                            <hr>
+                            <li><a href="{% url 'animes' %}" class="text-white fs-6 " style="text-decoration: none;">Animes</a></li>
+                            <hr>
+                            <li><a href="{% url 'series' %}" class="text-white fs-6 " style="text-decoration: none;">Series</a></li>
+                            <hr>
+                            
+                        </ul>
+                    </div>
+                </div>
+
+                <div >
+                    <button class="btn btn-sm filter d-lg-none d-md-none d-sm-block btn-xs"  type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar"><i class="fa-solid fa-bars"></i></button>
+                </div>
+            </div>
+        </header>
+    </div>
+</header>

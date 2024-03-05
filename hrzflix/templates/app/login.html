@@ -1,0 +1,64 @@
+{% extends 'app/layouts/main2.html' %}
+{%  block title %}
+Register | HrzFlix
+{%  endblock %}
+{% block content %}
+{% include 'app/inc/message.html' %}
+
+<div id="whole-content">
+    <div class="form-wrapper"> 
+
+        <h2>Login</h2>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-controll">
+                <input type="text" name="username">
+                <label for="">Username</label>
+            </div>
+
+            <div class="form-controll">
+                <input type="password" id="pass" name="password">
+                <label for="">Password</label>
+            </div>
+
+            <div class="remember-me">
+                <input type="checkbox" id="remember-me" onclick="">
+                <label for="remember-me">Show Password</label>
+            </div>
+
+            <button type="submit">Login</button>
+
+        </form>
+
+        <p class="text-center">Not have an account? <a href="{% url 'register' %}">Register </a></p>
+
+    </div>
+</div>
+
+ <!-- Include jQuery -->
+ <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+ <!-- Sweet Toast -->
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+     <script>
+       
+       show = document.getElementById("remember-me")
+
+       show.addEventListener('click',function() {
+        pass = document.getElementById("pass")
+
+        if (pass.type === "password"){
+            pass.type = "text"
+        }
+
+        else{
+            pass.type = "password"
+        }
+        console.log(pass);
+       })
+     </script>
+
+
+{% endblock %}

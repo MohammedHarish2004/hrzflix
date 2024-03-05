@@ -1,0 +1,19 @@
+ <!-- Include jQuery -->
+ <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+ <!-- Sweet Toast -->
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+     
+     {% for msg in messages %}
+     <script>
+          let title = "{{ msg.tags }}" === "success" ? "Success" : "Error";
+         Swal.fire({
+             icon: "{{msg.tags}}",
+             title: title,
+             text: '{{ msg}}',
+             showConfirmButton:false,
+             timer:1500
+             });
+     </script>
+     {% endfor %}
